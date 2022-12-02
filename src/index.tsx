@@ -1,15 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './pages/App';
-import './common/style/index.css'
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import IsInGameProvider from "./common/hooks/useIsInGame";
+import "./common/style/index.css";
+import App from "./pages/App";
+import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <IsInGameProvider>
+      <App />
+    </IsInGameProvider>
   </React.StrictMode>
 );
 
