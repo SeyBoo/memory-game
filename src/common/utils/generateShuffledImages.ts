@@ -9,6 +9,13 @@ import Snowflake from '../assets/icon/snowflake.png'
 import Sun from '../assets/icon/sun.png'
 import HandSpock from '../assets/icon/hand-spock.png'
 import LiraSign from '../assets/icon/lira-sign.png'
+import Building from '../assets/icon/building.png'
+import Cloud from '../assets/icon/cloud.png'
+import Feather from '../assets/icon/feather.png'
+import Fish from '../assets/icon/fish.png'
+import Mountain from '../assets/icon/mountain.png'
+import Ticket from '../assets/icon/ticket.png'
+import Mouskito from '../assets/icon/mouskito.png'
 import { GameArrayItem } from "../hooks/useIsInGame";
 
 const iconList = [
@@ -23,6 +30,13 @@ const iconList = [
   HandSpock,
   Sun,
   LiraSign,
+  Building,
+  Cloud,
+  Feather,
+  Fish,
+  Mountain,
+  Ticket,
+  Mouskito
 ]
 
 const GenerateShuffledImages = (grid: 8 | 18) => {
