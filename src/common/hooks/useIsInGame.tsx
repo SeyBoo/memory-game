@@ -73,14 +73,16 @@ const IsInGameProvider: FunctionComponent<PropsWithChildren> = ({
   };
 
   useEffect(() => {
+    let interval: any;
     if (!game.won) {
-      setInterval(() => {
-        setGameTimer(() => {
-          return gameTimer + 1;
-        });
+      interval = setInterval(() => {
+        setGameTimer((prevTime) => prevTime + 1);
       }, 1000);
+    } else if (game.won) {
+      clearInterval(interval);
     }
-  }, [gameTimer, game]);
+    return () => clearInterval(interval);
+  }, [game]);
 
   useEffect(() => {
     if (!game.won && game.gridValue.length === openCards.length) {
