@@ -13,7 +13,8 @@ const Game: FunctionComponent = () => {
     isCardsFound,
     flipImage,
     restartGame,
-    startNewGame,
+    setupNewGame,
+    gameTimer,
   } = useGame();
 
   if (gameData.won) console.log('won');
@@ -21,6 +22,13 @@ const Game: FunctionComponent = () => {
   return (
     <div className="w-[80%] m-auto py-10">
       <Nav restartGame={restartGame} setupNewGame={setupNewGame} />
+      <SoloWinModal
+        gameTime={formatTimer(gameTimer)}
+        moves={gameData.moveCounter}
+        restartGame={restartGame}
+        setupNewGame={setupNewGame}
+        showModal={gameData.won}
+      />
       <main className="flex flex-col items-center mt-20">
         <div
           className="grid gap-4"

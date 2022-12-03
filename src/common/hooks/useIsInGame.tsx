@@ -82,6 +82,15 @@ const IsInGameProvider: FunctionComponent<PropsWithChildren> = ({
     }
   }, [gameTimer, game]);
 
+  useEffect(() => {
+    if (!game.won && game.gridValue.length === openCards.length) {
+      setGame({
+        ...game,
+        won: true,
+      });
+    }
+  }, [game, openCards]);
+
   const startGame = ({ gridSize, theme, playerCount }: StartGameProps) => {
     setGame({
       gridValue: GenerateShuffledGridValue(theme, gridSize),
