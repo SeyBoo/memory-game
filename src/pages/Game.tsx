@@ -44,7 +44,7 @@ const Game: FunctionComponent = () => {
         <div className="flex gap-6 max-w-[500px] w-full mt-20">
           <div className="bg-[rgb(223,231,236)] flex justify-between items-center rounded-lg p-5 w-full">
             <h5 className="text-[#7191A5] font-bold">Time</h5>
-            <RenderTimer />
+            <Timer time={gameTimer} />
           </div>
           <div className="bg-[#DFE7EC] flex justify-between items-center rounded-lg p-5 w-full">
             <h5 className="text-[#7191A5] font-bold">Moves</h5>

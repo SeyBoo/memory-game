@@ -42,7 +42,8 @@ interface GameActions {
   isCardChosen: (value: number) => boolean;
   flipImage: (value: number, index: number) => void;
   restartGame: () => void;
-  startNewGame: () => void;
+  setupNewGame: () => void;
+  gameTimer: number;
 }
 
 const IsInGameContext = createContext({} as GameActions);
@@ -60,8 +61,8 @@ const IsInGameProvider: FunctionComponent<PropsWithChildren> = ({
 
   const [cardsChosen, setCardsChosen] = useState<number[]>([]);
   const [cardsChosenIds, setCardsChosenIds] = useState<number[]>([]);
-
   const [openCards, setOpenCards] = useState<number[]>([]);
+  const [gameTimer, setGameTimer] = useState<number>(0);
 
   const GenerateShuffledGridValue = (theme: themeI, gridSize: gridSizeI) => {
     if (theme === "icons") {
@@ -70,6 +71,16 @@ const IsInGameProvider: FunctionComponent<PropsWithChildren> = ({
       return GenerateShuffledNumbers(gridSize);
     }
   };
+
+  useEffect(() => {
+    if (!game.won) {
+      setInterval(() => {
+        setGameTimer(() => {
+          return gameTimer + 1;
+        });
+      }, 1000);
+    }
+  }, [gameTimer, game]);
 
   const startGame = ({ gridSize, theme, playerCount }: StartGameProps) => {
     setGame({
@@ -80,6 +91,7 @@ const IsInGameProvider: FunctionComponent<PropsWithChildren> = ({
       moveCounter: 0,
       won: false,
     });
+    setGameTimer(0);
   };
 
   const restartGame = () => {
@@ -89,9 +101,13 @@ const IsInGameProvider: FunctionComponent<PropsWithChildren> = ({
       gridValue: GenerateShuffledGridValue(game.theme, game.gridSize),
       won: false,
     });
+    setOpenCards([]);
+    setCardsChosenIds([]);
+    setCardsChosen([]);
+    setGameTimer(0);
   };
 
-  const startNewGame = () => {
+  const setupNewGame = () => {
     setGame({
       ...game,
       gridValue: [],
@@ -131,11 +147,11 @@ const IsInGameProvider: FunctionComponent<PropsWithChildren> = ({
     }
   };
 
-  const isCardChosen = (index: number) => {
+  const isCardChosen = (index: number): boolean => {
     return Boolean(cardsChosenIds?.includes(index));
   };
 
-  const isCardsFound = (value: number) => {
+  const isCardsFound = (value: number): boolean => {
     return Boolean(openCards?.includes(value));
   };
 
@@ -148,7 +164,8 @@ const IsInGameProvider: FunctionComponent<PropsWithChildren> = ({
         isCardChosen,
         flipImage,
         restartGame,
-        startNewGame,
+        setupNewGame,
+        gameTimer,
       }}
     >
       {children}
