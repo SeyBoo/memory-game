@@ -17,8 +17,6 @@ const Game: FunctionComponent = () => {
     gameTimer,
   } = useGame();
 
-  if (gameData.won) console.log('won');
-  
   return (
     <div className="w-[80%] m-auto py-10">
       <Nav restartGame={restartGame} setupNewGame={setupNewGame} />
