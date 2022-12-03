@@ -39,7 +39,7 @@ const Game: FunctionComponent = () => {
           }}
         >
           {gameData.gridValue.map((value, index) => (
-            <GameButton
+            <GameIcon
               key={index}
               flipImage={() => flipImage(value.index, index)}
               isOpen={isCardChosen(index)}
