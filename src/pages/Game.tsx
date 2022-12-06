@@ -1,30 +1,79 @@
 import Timer from "../common/components/timer";
-import { FunctionComponent } from "react";
-import { useGame } from "../common/hooks/useIsInGame";
+import { FunctionComponent, useCallback, useEffect } from "react";
 import Nav from "../common/components/nav";
 import GameIcon from "../module/soloGame/components/gameIcon";
 import SoloWinModal from "../module/soloGame/soloWinModal";
 import formatTimer from "../common/utils/formatTimer";
+import { useAppDispatch, useAppSelector } from "../common/hooks/useStore";
+import {
+  flipImage,
+  getGameTimer,
+  restartGame,
+  setupNewGame,
+} from "../module/game/store/thunk";
+import { FlipImageProps } from "@/common/types/game.inteface";
 
 const Game: FunctionComponent = () => {
-  const {
-    gameData,
-    isCardChosen,
-    isCardsFound,
-    flipImage,
-    restartGame,
-    setupNewGame,
-    gameTimer,
-  } = useGame();
+  const dispatch = useAppDispatch();
+
+  const gameData = useAppSelector((state) => state.game.gameData);
+  const cardsChosenIds = useAppSelector(
+    (state) => state.game.gameCards.cardsChosenIds
+  );
+  const openCards = useAppSelector((state) => state.game.gameCards.openCards);
+  const gameTimer = useAppSelector((state) => state.game.gameTimer);
+  console.log(gameTimer);
+
+  const handleRestartGame = async () => {
+    try {
+      await dispatch(restartGame());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleCheckIsCardChosen = (index: number): boolean => {
+    return Boolean(cardsChosenIds?.includes(index));
+  };
+
+  const handleCheckIsCardFound = (value: number): boolean => {
+    return Boolean(openCards?.includes(value));
+  };
+
+  const handleFlipImage = async ({ value, index }: FlipImageProps) => {
+    try {
+      await dispatch(flipImage({ value, index }));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSetupNewGame = async () => {
+    try {
+      await dispatch(setupNewGame());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    if (gameData && !gameData.won) {
+      setInterval(async () => {
+        await dispatch(getGameTimer());
+      }, 1000);
+    }
+  }, [gameData, dispatch]);
+
+  if (!gameData) return null;
 
   return (
     <div className="w-[80%] m-auto py-10">
-      <Nav restartGame={restartGame} setupNewGame={setupNewGame} />
+      <Nav restartGame={handleRestartGame} setupNewGame={handleSetupNewGame} />
       <SoloWinModal
         gameTime={formatTimer(gameTimer)}
         moves={gameData.moveCounter}
-        restartGame={restartGame}
-        setupNewGame={setupNewGame}
+        restartGame={handleRestartGame}
+        setupNewGame={handleSetupNewGame}
         showModal={gameData.won}
       />
       <main className="flex flex-col items-center mt-20">
@@ -39,9 +88,14 @@ const Game: FunctionComponent = () => {
           {gameData.gridValue.map((value, index) => (
             <GameIcon
               key={index}
-              flipImage={() => flipImage(value.index, index)}
-              isOpen={isCardChosen(index)}
-              isFound={isCardsFound(value.index)}
+              flipImage={() =>
+                handleFlipImage({
+                  index: index,
+                  value: value.index,
+                })
+              }
+              isOpen={handleCheckIsCardChosen(index)}
+              isFound={handleCheckIsCardFound(value.index)}
               value={value.index}
               image={value.image}
             />

@@ -1,15 +1,18 @@
 import {
-  gridSizeI,
-  playerCountI,
-  themeI,
-  useGame,
-} from "../common/hooks/useIsInGame";
-import {
   FormEvent,
   FunctionComponent,
   PropsWithChildren,
   useState,
 } from "react";
+import Modal from "../common/components/modal";
+import { useAppDispatch } from "../common/hooks/useStore";
+import { startGame } from "../module/game/store/thunk";
+import {
+  gridSizeI,
+  playerCountI,
+  StartGameProps,
+  themeI,
+} from "../common/types/game.inteface";
 
 interface AppButtonProps {
   onClick: () => void;
@@ -47,16 +50,34 @@ const Home: FunctionComponent = () => {
   const [playerCount, setPlayerCount] = useState<playerCountI>(1);
   const [theme, setTheme] = useState<themeI>("numbers");
   const [gridSize, setGridSize] = useState<gridSizeI>(8);
+  const [showJoinGameModal, setShowJoinGameModal] = useState<boolean>(false);
+  const [gameCode, setGameCode] = useState<string>("");
 
-  const { startGame } = useGame();
+  const dispatch = useAppDispatch();
+
+  const handleStartGame = async ({
+    gridSize,
+    playerCount,
+    theme,
+  }: StartGameProps) => {
+    try {
+      await dispatch(startGame({ gridSize, playerCount, theme }));
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const handleFormSubmission = (e: FormEvent) => {
     e.preventDefault();
-    startGame({
+    handleStartGame({
       gridSize,
       theme,
       playerCount,
     });
+  };
+
+  const handleJoinGame = () => {
+    if (gameCode === "") return;
   };
 
   return (
@@ -133,6 +154,34 @@ const Home: FunctionComponent = () => {
           Start Game
         </button>
       </form>
+      <div
+        className="self-end mr-20"
+        onClick={() => setShowJoinGameModal(!showJoinGameModal)}
+      >
+        <button className="text-white border px-6 py-2 rounded-full">
+          Join game
+        </button>
+      </div>
+      {showJoinGameModal && (
+        <Modal displayModal={showJoinGameModal}>
+          <div className="flex flex-col gap-10">
+            <h5 className="text-3xl font-semibold">Join a game</h5>
+            <input
+              type="text"
+              placeholder="4a40"
+              className="text-center"
+              onChange={(e) => console.log(e)}
+            />
+            <button
+              type="button"
+              className="font-semibold border w-fit m-auto p-2 px-6 uppercase"
+              onClick={() => handleJoinGame()}
+            >
+              Join
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

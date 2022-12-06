@@ -16,7 +16,7 @@ import Fish from '../assets/icon/fish.png'
 import Mountain from '../assets/icon/mountain.png'
 import Ticket from '../assets/icon/ticket.png'
 import Mouskito from '../assets/icon/mouskito.png'
-import { GameArrayItem } from "../hooks/useIsInGame";
+import { GameArrayItem } from "../types/game.inteface";
 
 const iconList = [
   Anchor,

@@ -1,18 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import IsInGameProvider from "./common/hooks/useIsInGame";
+import store from "./common/store";
 import "./common/style/index.css";
 import App from "./pages/App";
 import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <IsInGameProvider>
+    <Provider store={store}>
       <App />
-    </IsInGameProvider>
+    </Provider>
   </React.StrictMode>
 );
 

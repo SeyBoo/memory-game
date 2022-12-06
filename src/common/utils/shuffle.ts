@@ -1,4 +1,4 @@
-import { GameArrayItem } from "../hooks/useIsInGame";
+import { GameArrayItem } from "../types/game.inteface";
 
 const Shuffle = (array: GameArrayItem[]) => {
   let currentIndex = array.length,  randomIndex;

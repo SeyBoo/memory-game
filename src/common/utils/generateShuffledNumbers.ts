@@ -1,4 +1,4 @@
-import { GameArrayItem } from "../hooks/useIsInGame";
+import { GameArrayItem } from "../types/game.inteface";
 import Shuffle from "./shuffle";
 
 const GenerateShuffledNumbers = (grid: 8 | 18) => {

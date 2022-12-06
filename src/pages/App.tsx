@@ -1,12 +1,12 @@
-import { useGame } from "../common/hooks/useIsInGame";
 import { FunctionComponent } from "react";
 import Game from "./Game";
 import Home from "./Home";
+import { useAppSelector } from "../common/hooks/useStore";
 
 const App: FunctionComponent = () => {
-  const { gameData } = useGame();
+  const gameData = useAppSelector((state) => state.game.gameData);
 
-  if (gameData.gridValue.length > 1) return <Game />;
+  if (gameData) return <Game />;
 
   return <Home />;
 };
