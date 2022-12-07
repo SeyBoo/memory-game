@@ -16,13 +16,7 @@ import { FlipImageProps } from "@/common/types/game.inteface";
 const Game: FunctionComponent = () => {
   const dispatch = useAppDispatch();
 
-  const gameData = useAppSelector((state) => state.game.gameData);
-  const cardsChosenIds = useAppSelector(
-    (state) => state.game.gameCards.cardsChosenIds
-  );
-  const openCards = useAppSelector((state) => state.game.gameCards.openCards);
-  const gameTimer = useAppSelector((state) => state.game.gameTimer);
-  console.log(gameTimer);
+  const game = useAppSelector((state) => state.game);
 
   const handleRestartGame = async () => {
     try {
@@ -33,11 +27,11 @@ const Game: FunctionComponent = () => {
   };
 
   const handleCheckIsCardChosen = (index: number): boolean => {
-    return Boolean(cardsChosenIds?.includes(index));
+    return Boolean(game.gameCards.cardsChosenIds?.includes(index));
   };
 
   const handleCheckIsCardFound = (value: number): boolean => {
-    return Boolean(openCards?.includes(value));
+    return Boolean(game.gameCards.openCards?.includes(value));
   };
 
   const handleFlipImage = async ({ value, index }: FlipImageProps) => {
@@ -57,35 +51,35 @@ const Game: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    if (gameData && !gameData.won) {
+    if (game.gameData && !game.gameData.won) {
       setInterval(async () => {
         await dispatch(getGameTimer());
       }, 1000);
     }
-  }, [gameData, dispatch]);
+  }, [game.gameData, dispatch]);
 
-  if (!gameData) return null;
+  if (!game.gameData) return null;
 
   return (
     <div className="w-[80%] m-auto py-10">
       <Nav restartGame={handleRestartGame} setupNewGame={handleSetupNewGame} />
-      <SoloWinModal
-        gameTime={formatTimer(gameTimer)}
-        moves={gameData.moveCounter}
+      <WinModal
+        gameTime={formatTimer(game.gameTimer)}
+        moves={game.gameData.moveCounter}
         restartGame={handleRestartGame}
         setupNewGame={handleSetupNewGame}
-        showModal={gameData.won}
+        showModal={game.gameData.won}
       />
       <main className="flex flex-col items-center mt-20">
         <div
           className="grid gap-4"
           style={{
             gridTemplateColumns: `repeat(${
-              gameData.gridSize === 8 ? "4" : "6"
+              game.gameData.gridSize === 8 ? "4" : "6"
             }, minmax(0, 1fr))`,
           }}
         >
-          {gameData.gridValue.map((value, index) => (
+          {game.gameData.gridValue.map((value, index) => (
             <GameIcon
               key={index}
               flipImage={() =>
@@ -104,12 +98,12 @@ const Game: FunctionComponent = () => {
         <div className="flex gap-6 max-w-[500px] w-full mt-20">
           <div className="bg-[rgb(223,231,236)] flex justify-between items-center rounded-lg p-5 w-full">
             <h5 className="text-[#7191A5] font-bold">Time</h5>
-            <Timer time={gameTimer} />
+            <Timer time={game.gameTimer} />
           </div>
           <div className="bg-[#DFE7EC] flex justify-between items-center rounded-lg p-5 w-full">
             <h5 className="text-[#7191A5] font-bold">Moves</h5>
             <h6 className="text-[#304859] font-bold text-3xl">
-              {gameData.moveCounter}
+              {game.gameData.moveCounter}
             </h6>
           </div>
         </div>
