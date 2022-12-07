@@ -55,7 +55,7 @@ export const flipImage =
 
     await dispatch(setGame({ game: response.game }));
 
-    if (response.clean) {
+    if (response.shouldCleanChosenCard) {
       setTimeout(async () => {
         const resetCards = {
           ...response.cards,

@@ -38,5 +38,5 @@ export interface FlipImageProps {
 export interface FligImageReponse {
   game: Game;
   cards: GameCardsI;
-  clean: boolean;
+  shouldCleanChosenCard: boolean;
 }

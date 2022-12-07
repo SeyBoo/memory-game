@@ -90,54 +90,87 @@ export default class SoloGame implements GameBackend {
     }
   }
 
-  flipImage({ value, index }: FlipImageProps): FligImageReponse | void {
+  addNewChosenCard({ value, index }: FlipImageProps) {
+    this.setCards = {
+      ...this.getCards,
+      cardsChosen: this.getCards.cardsChosen?.concat(value),
+      cardsChosenIds: this.getCards.cardsChosenIds?.concat(index),
+    };
+  }
+
+  checkShouldCleanChosenCards() {
+    if (this.getCards.cardsChosen.length === 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  cleanChosenCards() {
+    this.setCards = {
+      ...this.getCards,
+      cardsChosen: [],
+      cardsChosenIds: [],
+    };
+  }
+
+  checkIfCardIsAlreadySelected(index: number) {
     if (
       this.getCards.cardsChosenIds?.length === 1 &&
       this.getCards.cardsChosenIds[0] === index
     ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkIfSelectedImageMatch(value: number) {
+    if (this.getCards.cardsChosen[0] === value) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  addNewFoundCards(value: number) {
+    this.setCards = {
+      ...this.getCards,
+      openCards: this.getCards.openCards?.concat([
+        this.getCards.cardsChosen[0],
+        value,
+      ]),
+    };
+  }
+
+  flipImage({ value, index }: FlipImageProps): FligImageReponse | void {
+    if (this.checkIfCardIsAlreadySelected(index)) {
       return;
     }
 
-    // Check if
-    if (this.getCards.cardsChosen?.length < 2) {
-      let clean = false;
-      if (this.getCards.cardsChosen?.length === 1) {
-        this.incrementMoveCounter();
-        // Check if images are the same
-        if (this.getCards.cardsChosen[0] === value) {
-          this.setCards = {
-            ...this.getCards,
-            openCards: this.getCards.openCards?.concat([
-              this.getCards.cardsChosen[0],
-              value,
-            ]),
-          };
-          this.checkIfWon();
-          clean = true;
-        }
-      }
-      this.setCards = {
-        ...this.getCards,
-        cardsChosen: this.getCards.cardsChosen?.concat(value),
-        cardsChosenIds: this.getCards.cardsChosenIds?.concat(index),
-      };
+    let shouldCleanChosenCard = false;
 
-      if (this.getCards.cardsChosen.length === 2) {
-        clean = true;
-        setTimeout(() => {
-          this.setCards = {
-            ...this.getCards,
-            cardsChosen: [],
-            cardsChosenIds: [],
-          };
-        }, 700);
+    if (this.getCards.cardsChosen?.length === 1) {
+      this.incrementMoveCounter();
+      if (this.checkIfSelectedImageMatch(value)) {
+        this.addNewFoundCards(value);
+        this.checkIfWon();
       }
-
-      return {
-        game: this.getGame,
-        cards: this.getCards,
-        clean,
-      };
     }
+
+    this.addNewChosenCard({ value, index });
+
+    if (this.checkShouldCleanChosenCards()) {
+      shouldCleanChosenCard = true;
+      setTimeout(() => {
+        this.cleanChosenCards();
+      }, 700);
+    }
+
+    return {
+      game: this.getGame,
+      cards: this.getCards,
+      shouldCleanChosenCard,
+    };
   }
 }
