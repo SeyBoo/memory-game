@@ -1,4 +1,4 @@
-import Modal from "../../common/components/modal";
+import Modal from "../../../common/components/modal";
 import { FunctionComponent } from "react";
 
 interface FooterProps {
@@ -50,14 +50,13 @@ interface SoloWinModalProps {
   showModal: boolean;
 }
 
-const SoloWinModal: FunctionComponent<SoloWinModalProps> = ({
+const WinModal: FunctionComponent<SoloWinModalProps> = ({
   setupNewGame,
   restartGame,
   moves,
   gameTime,
   showModal,
 }) => {
-  
   return (
     <Modal displayModal={showModal}>
       <div className="flex flex-col gap-8">
@@ -75,4 +74,4 @@ const SoloWinModal: FunctionComponent<SoloWinModalProps> = ({
   );
 };
 
-export default SoloWinModal;
+export default WinModal;

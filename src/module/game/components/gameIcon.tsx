@@ -29,7 +29,13 @@ const GameIcon: FunctionComponent<GameIconProps> = ({
       }}
       onClick={() => handleClick()}
     >
-      {isOpen || isFound ? image ? <img src={image} alt="" /> : value : ""}
+      {isOpen || isFound ? (
+        image ? (
+          <img src={image} alt="game-icon" />
+        ) : (
+          value
+        )
+      ) : null}
     </button>
   );
 };
