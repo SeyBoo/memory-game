@@ -7,12 +7,8 @@ import {
 import Modal from "../common/components/modal";
 import { useAppDispatch } from "../common/hooks/useStore";
 import { startGame } from "../module/game/store/thunk";
-import {
-  gridSizeI,
-  playerCountI,
-  StartGameProps,
-  themeI,
-} from "../common/types/game.inteface";
+import { StartGameProps } from "../common/types/game.inteface";
+import { useCustomForm } from "../common/hooks/useCustomForm";
 
 interface AppButtonProps {
   onClick: () => void;
@@ -47,9 +43,13 @@ const AppContainer: FunctionComponent<PropsWithChildren> = ({ children }) => {
 };
 
 const Home: FunctionComponent = () => {
-  const [playerCount, setPlayerCount] = useState<playerCountI>(1);
-  const [theme, setTheme] = useState<themeI>("numbers");
-  const [gridSize, setGridSize] = useState<gridSizeI>(8);
+  const [formValues, handleChange, setFormValues] =
+    useCustomForm<StartGameProps>({
+      playerCount: 1,
+      theme: "numbers",
+      gridSize: 8,
+    });
+
   const [showJoinGameModal, setShowJoinGameModal] = useState<boolean>(false);
   const [gameCode, setGameCode] = useState<string>("");
 
@@ -67,16 +67,18 @@ const Home: FunctionComponent = () => {
     }
   };
 
-  const handleFormSubmission = (e: FormEvent) => {
+  const handleStartGameForm = (e: FormEvent) => {
     e.preventDefault();
     handleStartGame({
-      gridSize,
-      theme,
-      playerCount,
+      gridSize: formValues.gridSize,
+      theme: formValues.theme,
+      playerCount: formValues.playerCount,
     });
   };
 
-  const handleJoinGame = () => {
+  const handleJoinGameForm = (e: FormEvent) => {
+    e.preventDefault();
+
     if (gameCode === "") return;
   };
 
@@ -85,20 +87,30 @@ const Home: FunctionComponent = () => {
       <h1 className="text-white text-3xl">memory</h1>
       <form
         className="bg-white rounded-xl max-w-[500px] w-full p-10 flex flex-col gap-6"
-        onSubmit={(e) => handleFormSubmission(e)}
+        onSubmit={(e) => handleStartGameForm(e)}
       >
         <AppContainer>
           <AppTittle>Select Theme</AppTittle>
           <div className="flex justify-between items-center gap-4">
             <AppButton
-              onClick={() => setTheme("numbers")}
-              selected={theme === "numbers"}
+              onClick={() =>
+                setFormValues({
+                  ...formValues,
+                  theme: "numbers",
+                })
+              }
+              selected={formValues.theme === "numbers"}
             >
               Numbers
             </AppButton>
             <AppButton
-              onClick={() => setTheme("icons")}
-              selected={theme === "icons"}
+              onClick={() =>
+                setFormValues({
+                  ...formValues,
+                  theme: "icons",
+                })
+              }
+              selected={formValues.theme === "icons"}
             >
               Icons
             </AppButton>
@@ -108,26 +120,46 @@ const Home: FunctionComponent = () => {
           <AppTittle>Numbers of players</AppTittle>
           <div className="flex justify-between items-center gap-4">
             <AppButton
-              onClick={() => setPlayerCount(1)}
-              selected={playerCount === 1}
+              onClick={() =>
+                setFormValues({
+                  ...formValues,
+                  playerCount: 1,
+                })
+              }
+              selected={formValues.playerCount === 1}
             >
               1
             </AppButton>
             <AppButton
-              onClick={() => setPlayerCount(2)}
-              selected={playerCount === 2}
+              onClick={() =>
+                setFormValues({
+                  ...formValues,
+                  playerCount: 2,
+                })
+              }
+              selected={formValues.playerCount === 2}
             >
               2
             </AppButton>
             <AppButton
-              onClick={() => setPlayerCount(3)}
-              selected={playerCount === 3}
+              onClick={() =>
+                setFormValues({
+                  ...formValues,
+                  playerCount: 3,
+                })
+              }
+              selected={formValues.playerCount === 3}
             >
               3
             </AppButton>
             <AppButton
-              onClick={() => setPlayerCount(4)}
-              selected={playerCount === 4}
+              onClick={() =>
+                setFormValues({
+                  ...formValues,
+                  playerCount: 4,
+                })
+              }
+              selected={formValues.playerCount === 4}
             >
               4
             </AppButton>
@@ -136,12 +168,25 @@ const Home: FunctionComponent = () => {
         <AppContainer>
           <AppTittle>Grid Size</AppTittle>
           <div className="flex justify-between items-center gap-4">
-            <AppButton onClick={() => setGridSize(8)} selected={gridSize === 8}>
+            <AppButton
+              onClick={() =>
+                setFormValues({
+                  ...formValues,
+                  gridSize: 8,
+                })
+              }
+              selected={formValues.gridSize === 8}
+            >
               4x4
             </AppButton>
             <AppButton
-              onClick={() => setGridSize(18)}
-              selected={gridSize === 18}
+              onClick={() =>
+                setFormValues({
+                  ...formValues,
+                  gridSize: 18,
+                })
+              }
+              selected={formValues.gridSize === 18}
             >
               6x6
             </AppButton>
@@ -166,19 +211,20 @@ const Home: FunctionComponent = () => {
         <Modal displayModal={showJoinGameModal}>
           <div className="flex flex-col gap-10">
             <h5 className="text-3xl font-semibold">Join a game</h5>
-            <input
-              type="text"
-              placeholder="4a40"
-              className="text-center"
-              onChange={(e) => console.log(e)}
-            />
-            <button
-              type="button"
-              className="font-semibold border w-fit m-auto p-2 px-6 uppercase"
-              onClick={() => handleJoinGame()}
-            >
-              Join
-            </button>
+            <form onSubmit={(e) => handleJoinGameForm(e)}>
+              <input
+                type="text"
+                placeholder="4a40"
+                className="text-center"
+                onChange={(e) => setGameCode(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="font-semibold border w-fit m-auto p-2 px-6 uppercase"
+              >
+                Join
+              </button>
+            </form>
           </div>
         </Modal>
       )}
