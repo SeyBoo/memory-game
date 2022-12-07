@@ -1,8 +1,8 @@
 import Timer from "../common/components/timer";
-import { FunctionComponent, useCallback, useEffect } from "react";
+import { FunctionComponent, useEffect } from "react";
 import Nav from "../common/components/nav";
-import GameIcon from "../module/soloGame/components/gameIcon";
-import SoloWinModal from "../module/soloGame/soloWinModal";
+import GameIcon from "../module/game/components/gameIcon";
+import WinModal from "../module/game/components/winModal";
 import formatTimer from "../common/utils/formatTimer";
 import { useAppDispatch, useAppSelector } from "../common/hooks/useStore";
 import {
