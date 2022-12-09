@@ -9,15 +9,13 @@ export interface GameBackend {
   flipImage: ({ value, index }: FlipImageProps) => FligImageReponse | void;
 
   startGame: ({ gridSize, theme, playerCount }: StartGameProps) => Game;
-
-  getTimer: () => number;
 }
 
 let gameBackend: undefined | GameBackend = undefined;
 
-export async function getGameBackend(
-  gameType: "solo" | "multiplayer"
-): Promise<GameBackend> {
+export type GameType = "solo" | "multiplayer";
+
+export async function getGameBackend(gameType: GameType): Promise<GameBackend> {
   if (gameBackend === undefined) {
     const mod = await import("./backends/" + gameType);
     gameBackend = new mod.default() as GameBackend;

@@ -3,13 +3,17 @@ import {
   StartGameProps,
 } from "../../../common/types/game.inteface";
 import { AppThunk } from "../../../common/store";
-import { getGameBackend } from "../api";
-import { resetGame, setCards, setGame, setGameTimer } from "./slice";
+import { GameType, getGameBackend } from "../api";
+import { resetGame, setCards, setGame } from "./slice";
 
 export const startGame =
   ({ gridSize, playerCount, theme }: StartGameProps): AppThunk =>
-  async (dispatch) => {
-    const gameBackend = await getGameBackend("solo");
+  async (dispatch, getState) => {
+    const gameType: GameType =
+      getState().game.gameData?.playerCount === 1 ? "solo" : "multiplayer";
+
+    const gameBackend = await getGameBackend(gameType);
+
     const game = await gameBackend.startGame({
       gridSize,
       playerCount,
@@ -18,15 +22,14 @@ export const startGame =
     await dispatch(setGame({ game }));
   };
 
-export const getGameTimer = (): AppThunk => async (dispatch) => {
-  const gameBackend = await getGameBackend("solo");
-  const timer = await gameBackend.getTimer();
-  await dispatch(setGameTimer({ timer }));
-};
-
 export const restartGame = (): AppThunk => async (dispatch, getState) => {
-  const gameBackend = await getGameBackend("solo");
+  const gameType: GameType =
+    getState().game.gameData?.playerCount === 1 ? "solo" : "multiplayer";
+
+  const gameBackend = await getGameBackend(gameType);
+
   const currentGame = await getState().game.gameData;
+
   if (!currentGame) return;
 
   const game = await gameBackend.startGame({
@@ -44,8 +47,11 @@ export const setupNewGame = (): AppThunk => async (dispatch) => {
 
 export const flipImage =
   ({ value, index }: FlipImageProps): AppThunk =>
-  async (dispatch) => {
-    const gameBackend = await getGameBackend("solo");
+  async (dispatch, getState) => {
+    const gameType: GameType =
+      getState().game.gameData?.playerCount === 1 ? "solo" : "multiplayer";
+
+    const gameBackend = await getGameBackend(gameType);
 
     const response = await gameBackend.flipImage({ value, index });
 
