@@ -1,5 +1,4 @@
-import Timer from "../common/components/timer";
-import { FunctionComponent, useEffect } from "react";
+import { FunctionComponent } from "react";
 import Nav from "../common/components/nav";
 import GameIcon from "../module/game/components/gameIcon";
 import WinModal from "../module/game/components/winModal";
@@ -7,7 +6,6 @@ import formatTimer from "../common/utils/formatTimer";
 import { useAppDispatch, useAppSelector } from "../common/hooks/useStore";
 import {
   flipImage,
-  getGameTimer,
   restartGame,
   setupNewGame,
 } from "../module/game/store/thunk";
@@ -49,15 +47,6 @@ const Game: FunctionComponent = () => {
       console.log(e);
     }
   };
-
-  useEffect(() => {
-    if (game.gameData && !game.gameData.won) {
-      setInterval(async () => {
-        await dispatch(getGameTimer());
-      }, 1000);
-    }
-  }, [game.gameData, dispatch]);
-
   if (!game.gameData) return null;
 
   return (
@@ -96,10 +85,9 @@ const Game: FunctionComponent = () => {
           ))}
         </div>
         <div className="flex gap-6 max-w-[500px] w-full mt-20">
-          <div className="bg-[rgb(223,231,236)] flex justify-between items-center rounded-lg p-5 w-full">
+          {/*           <div className="bg-[rgb(223,231,236)] flex justify-between items-center rounded-lg p-5 w-full">
             <h5 className="text-[#7191A5] font-bold">Time</h5>
-            <Timer time={game.gameTimer} />
-          </div>
+          </div> */}
           <div className="bg-[#DFE7EC] flex justify-between items-center rounded-lg p-5 w-full">
             <h5 className="text-[#7191A5] font-bold">Moves</h5>
             <h6 className="text-[#304859] font-bold text-3xl">
